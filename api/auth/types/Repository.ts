@@ -1,4 +1,5 @@
-import {User, UserParams} from "./User";
+import {UserParams} from "./User";
+import {Document, DocumentQuery} from "mongoose";
 
 export default interface Repository {
 
@@ -6,26 +7,32 @@ export default interface Repository {
     connect(): any
 
     // Getting a user given his ID or Email Address.
-    getOneUser(_id?: string, email?: string): User
+    getOneUser(_id?: string, email?: string): DocumentQuery<Document | null, Document, {}> & {}
 
     // Getting a user given his ID.
-    getUserWithID(_id: string): User
+    getUserWithID(_id: string): DocumentQuery<Document | null, Document, {}> & {}
 
     // Getting a user given his Email Address.
-    getUserWithEmail(email: string): User
+    getUserWithEmail(email: string): Promise<DocumentQuery<Document | null, Document, {}> & {} | null>
 
     // Adding a user.
-    addUser(user: UserParams): User
+    addUser(user: UserParams): Promise<Document>
 
     // Update a user
-    updateUser(_id: string, user: UserParams): User
+    updateUser(_id: string, user: UserParams): DocumentQuery<Document | null, Document, {}> & {}
 
     // Delete an user.
-    deleteUser(_id: string): User
+    deleteUser(_id: string): DocumentQuery<Document | null, Document, {}> & {}
 
     // Adding a password.
-    addPassword(userID: string, password: string): User
+    addPassword(email: Document, password: string): Promise<Document>
 
     // Update a password.
-    updatePassword(userID: string, password: string): User
+    updatePassword(email: Document, password: string): Promise<Document>
+
+    // Adding an email address.
+    addEmail(email: string): Promise<Document>
+
+    // Getting an email address.
+    getEmail(_id: string): DocumentQuery<Document | null, Document, {}> & {}
 }

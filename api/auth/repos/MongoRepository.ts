@@ -1,6 +1,9 @@
-import { connect as conn } from "mongoose";
+import {connect as conn, Document, DocumentQuery} from "mongoose";
 import Repository from "../types/Repository";
-import {User, UserParams} from "../types/User";
+import {UserParams} from "../types/User";
+import Email from "../schemas/Email";
+import Password from "../schemas/Password";
+import User from "../schemas/User";
 
 export default class MongoRepository implements Repository {
 
@@ -10,52 +13,57 @@ export default class MongoRepository implements Repository {
         useCreateIndex: true
     };
 
-    protected user: User = {
-        _id: "",
-        firstName: "",
-        lastName: "",
-        hasPassword: true,
-        isActive: true,
-        email: { _id: "", address: "", createdAt: new Date(), updatedAt: new Date()},
-        createdAt: new Date(),
-        updatedAt: new Date()
-    };
-
     async connect(): Promise<any> {
         const { DATABASE_URL = MongoRepository.LOCALHOST_DB } = process.env;
-        return await conn(DATABASE_URL, MongoRepository.MONGO_OPTIONS);
+        return conn(DATABASE_URL, MongoRepository.MONGO_OPTIONS);
     }
 
-    addPassword(userID: string, password: string): User {
-        return this.user;
+    async addEmail(email: string): Promise<Document> {
+        let _email = new Email({email});
+        return await _email.save();
     }
 
-    addUser(user: UserParams): User {
-        return this.user;
+    async addPassword(email: Document, password: string): Promise<Document> {
+        let _pass = new Password({ email, password });
+        return await _pass.save();
     }
 
-    deleteUser(_id: string): User {
-        return this.user;
+    async addUser(user: UserParams): Promise<Document> {
+        let _user = new User(user);
+        return await _user.save();
     }
 
-    getOneUser(_id?: string, email?: string): User {
-        return this.user;
+    deleteUser(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return User.findOneAndUpdate({ _id }, { $set: { isActive: false } }, { new: true });
     }
 
-    getUserWithEmail(email: string): User {
-        return this.user;
+    getOneUser(_id?: string, email?: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return User.findOne({ _id, email });
     }
 
-    getUserWithID(_id: string): User {
-        return this.user;
+    async getUserWithEmail(email: string): Promise<DocumentQuery<Document | null, Document, {}> & {} | null> {
+        const _email = await Email.findOne({ address: email });
+        if(!_email) return null;
+
+        // @ts-ignore
+        return User.findOne({ _id: _email.user });
     }
 
-    updatePassword(userID: string, password: string): User {
-        return this.user;
+    getUserWithID(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return User.findOne({_id});
     }
 
-    updateUser(_id: string, user: UserParams): User {
-        return this.user;
+    async updatePassword(email: Document, password: string): Promise<Document> {
+        const _pass = new Password({ email, password });
+        return await _pass.save();
+    }
+
+    updateUser(_id: string, user: UserParams): DocumentQuery<Document | null, Document, {}> & {} {
+        return User.findOneAndUpdate({ _id }, { $set: user }, { new: true });
+    }
+
+    getEmail(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return Email.findOne({ _id });
     }
 
 }

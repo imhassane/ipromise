@@ -1,13 +1,13 @@
 interface Password {
     _id: string,
-    user: User,
+    user: UserType,
     hash: string,
     isActive: string,
     createdAt: Date,
     updatedAt: Date
 }
 
-interface Email {
+export interface EmailType {
     _id: string,
     address: string,
     createdAt: Date,
@@ -20,11 +20,11 @@ export interface UserParams {
     email: string
 }
 
-export interface User {
+export interface UserType {
     _id: string,
     firstName: string,
     lastName: string,
-    email: Email,
+    email: EmailType,
     hasPassword: boolean,
     isActive: boolean,
     createdAt: Date,
