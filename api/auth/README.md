@@ -12,7 +12,7 @@ I'm using some architecture to facilitate future modifications.<br />
 - <strong>types</strong>: contains the interfaces of the api.
 
 ##### TODOs
- - [ ]
+
  - [ ] Adding a new user.
  - [ ] Updating an user.
  - [ ] Updating user's password.
