@@ -1,0 +1,31 @@
+{
+  "name": "auth",
+  "version": "0.0.0",
+  "description": "Authentication service for the ipromise application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc-watch --onSuccess \"node ./dist/index.js\""
+  },
+  "author": "imhassane",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cors": "^2.8.6",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.6",
+    "@types/mongoose": "^5.7.12",
+    "@types/winston": "^2.4.4",
+    "ts-node": "^8.8.2",
+    "tsc-watch": "^4.2.3",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.9",
+    "winston": "^3.2.1"
+  }
+}
