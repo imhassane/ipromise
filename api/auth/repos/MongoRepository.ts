@@ -40,19 +40,16 @@ export default class MongoRepository implements Repository {
     }
 
     getOneUser(_id?: string, email?: string): DocumentQuery<Document | null, Document, {}> & {} {
-        return User.findOne({ _id, email });
+        return Email.findOne({ user: _id, email });
     }
 
     async getUserWithEmail(email: string): Promise<DocumentQuery<Document | null, Document, {}> & {} | null> {
-        const _email = await Email.findOne({ address: email });
-        if(!_email) return null;
-
         // @ts-ignore
-        return User.findOne({ _id: _email.user });
+        return Email.findOne({ email }).populate("user");
     }
 
     getUserWithID(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
-        return User.findOne({_id});
+        return Email.findOne({ user: _id }).populate("user");
     }
 
     async updatePassword(email: Document, password: string): Promise<Document> {
@@ -65,7 +62,7 @@ export default class MongoRepository implements Repository {
     }
 
     getEmail(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
-        return Email.findOne({ _id });
+        return Email.findOne({ _id }).populate("user");
     }
 
     getEmailWithAddress(email: string): DocumentQuery<Document | null, Document, {}> & {} {

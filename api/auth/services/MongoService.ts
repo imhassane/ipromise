@@ -82,7 +82,7 @@ export default class MongoService implements Service {
 
         const _user = await this.repository.getUserWithID(_id);
         if(!_user)
-            throw new MalformedDataError("The user with the given ID does not exist");
+            throw new ResourceNotFoundError("The user with the given ID does not exist");
 
         return _user;
     }
