@@ -1,9 +1,6 @@
-import Express from "express";
+import Application from "./app";
 
-const application = Express();
-
-const { PORT = 5000 } = process.env;
-
-application.listen(PORT, () => {
+const { DEV_PORT = 5000 } = process.env;
+Application.listen(DEV_PORT, () => {
     console.log("Server running succesfully");
 });
