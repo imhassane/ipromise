@@ -9,7 +9,8 @@ const EmailSchema = new Schema({
             validator(value: string) {
                 return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value);
             }
-        }
+        },
+        unique: true
     },
     user: {
         type: SchemaTypes.ObjectId,
@@ -23,7 +24,7 @@ EmailSchema.pre('save', async function() {
     // We create a new user.
     let user = new User();
     user = await user.save();
-    
+
     // @ts-ignore
     this.user = user;
 });

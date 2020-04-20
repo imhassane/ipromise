@@ -34,4 +34,6 @@ export default interface Service {
 
     // Getting an email address.
     getEmail(_id: string): Promise<Document | null>
+
+    getEmailWithAddress(address: string): Promise<Document | null>
 }

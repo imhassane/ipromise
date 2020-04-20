@@ -24,8 +24,10 @@ export default class MongoRepository implements Repository {
     }
 
     async addPassword(email: Document, password: string): Promise<Document> {
-        let _pass = new Password({ email, password });
-        return await _pass.save();
+        let _pass = new Password({ email, hash: password });
+        _pass = await _pass.save();
+        // @ts-ignore
+        return _pass.email;
     }
 
     async addUser(user: UserParams): Promise<Document> {
@@ -64,6 +66,10 @@ export default class MongoRepository implements Repository {
 
     getEmail(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
         return Email.findOne({ _id });
+    }
+
+    getEmailWithAddress(email: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return Email.findOne({ email });
     }
 
 }

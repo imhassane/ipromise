@@ -35,4 +35,7 @@ export default interface Repository {
 
     // Getting an email address.
     getEmail(_id: string): DocumentQuery<Document | null, Document, {}> & {}
+
+    // Getting an email address with the email address.
+    getEmailWithAddress(address: string): DocumentQuery<Document | null, Document, {}> & {}
 }

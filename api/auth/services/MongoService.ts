@@ -1,9 +1,10 @@
 import Service from "../types/Service";
 import Repository from "../types/Repository";
-import {EmailType, UserParams, UserType} from "../types/User";
+import {UserParams} from "../types/User";
 import MalformedDataError from "../errors/MalformedDataError";
 import ResourceNotFoundError from "../errors/ResourceNotFoundError";
-import {DocumentQuery, Document} from "mongoose";
+import {Document} from "mongoose";
+import ResourceAlreadyExistsError from "../errors/ResourceAlreadyExistsError";
 
 export default class MongoService implements Service {
     repository: Repository;
@@ -19,6 +20,8 @@ export default class MongoService implements Service {
     }
 
     async addPassword(emailID: string, password: string): Promise<Document> {
+        password = password.trim();
+
         if(!password || password.length < 8)
             throw new MalformedDataError("The password should contain at least 8 characters");
 
@@ -33,8 +36,13 @@ export default class MongoService implements Service {
         if(!user.email || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(user.email))
             throw new MalformedDataError("The email address in not correct");
 
-        const { _id } = await this.repository.addEmail(user.email);
-        return this.repository.addUser({ email: _id, ...user });
+        let _email = await this.repository.getEmailWithAddress(user.email);
+        if(_email)
+            throw new ResourceAlreadyExistsError("The given email address already exists");
+
+        _email = await this.repository.addEmail(user.email);
+        await this.repository.addPassword(_email, <string> user.password);
+        return _email;
     }
 
     async deleteUser(_id: string): Promise<Document> {
@@ -109,6 +117,16 @@ export default class MongoService implements Service {
         if(!_id)
             throw new MalformedDataError("The email ID must be specified");
         const _email = await this.repository.getEmail(_id);
+        if(!_email)
+            throw new ResourceNotFoundError("The email address does not exist");
+        return _email;
+    }
+
+    async getEmailWithAddress(address: string): Promise<Document | null> {
+        if(!address)
+            throw new MalformedDataError("The email address must be specified");
+
+        const _email = await this.repository.getEmailWithAddress(address);
         if(!_email)
             throw new ResourceNotFoundError("The email address does not exist");
         return _email;

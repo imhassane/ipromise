@@ -1,9 +1,12 @@
 import Express from "express";
+import BodyParser from "body-parser";
 import routes from "./startup/routes";
 import MongoRepository from "./repos/MongoRepository";
 import MongoService from "./services/MongoService";
 
 const application = Express();
+
+application.use(BodyParser.json());
 
 const repository = new MongoRepository();
 repository.connect().then(() => {

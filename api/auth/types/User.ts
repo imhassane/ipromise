@@ -17,7 +17,8 @@ export interface EmailType {
 export interface UserParams {
     firstName?: string,
     lastName?: string,
-    email: string
+    email?: string,
+    password?: string
 }
 
 export interface UserType {
