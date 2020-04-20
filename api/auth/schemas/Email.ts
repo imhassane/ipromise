@@ -1,4 +1,5 @@
 import {model, Schema, SchemaTypes} from "mongoose";
+import User from "./User";
 
 const EmailSchema = new Schema({
     email: {
@@ -17,10 +18,14 @@ const EmailSchema = new Schema({
     isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 
-EmailSchema.pre('save', function() {
+EmailSchema.pre('save', async function() {
     // If it's the first time saving the email address.
     // We create a new user.
-    // TODO: Créer un nouvel utilisateur si c'est la première qu'on ajoute l'email.
+    let user = new User();
+    user = await user.save();
+    
+    // @ts-ignore
+    this.user = user;
 });
 
 const Email = model("Email", EmailSchema);
