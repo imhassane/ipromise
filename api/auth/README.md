@@ -15,10 +15,10 @@ I'm using some architecture to facilitate future modifications.<br />
 
  - [x] Adding a new user.
  - [x] Updating an user.
- - [ ] Updating user's password.
+ - [x] Updating user's password.
  - [ ] Updating user's email address.
  - [ ] Deleting some user's data.
- - [ ] Authentication with user's credentials.
+ - [x] Authentication with user's credentials.
  
 ##### How does the API work ?
 An user is represented by the <strong>User</strong> model defined by this schema.

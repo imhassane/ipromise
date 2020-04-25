@@ -5,13 +5,22 @@ import ResourceNotFoundError from "../errors/ResourceNotFoundError";
 
 export default (router: Router, service: Service) => {
 
-    router.get('/user/:_id', asyncMiddleware(async (req: Request, res: Response) => {
-        const user = await service.getUserWithID(req.params._id);
+    router.get('/user/', asyncMiddleware(async (req: Request, res: Response) => {
+        // @ts-ignore
+        const { user } = req.session;
+        if(!user)
+            return res.status(401).send("You are not authenticated");
+
         return res.status(200).send(user);
     }));
 
-    router.put("/user/:_id", asyncMiddleware(async (req: Request, res: Response) => {
-        const user = await service.updateUser(req.params._id, req.body);
+    router.put("/user/update", asyncMiddleware(async (req: Request, res: Response) => {
+        // @ts-ignore
+        let { user } = req.session;
+        if(!user)
+            return res.status(401).send("You are not authenticated");
+
+        user = await service.updateUser(user.user._id, req.body);
         return res.status(200).send(user);
     }));
 

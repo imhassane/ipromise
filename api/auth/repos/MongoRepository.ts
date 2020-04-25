@@ -68,7 +68,7 @@ export default class MongoRepository implements Repository {
     }
 
     getEmailWithAddress(email: string): DocumentQuery<Document | null, Document, {}> & {} {
-        return Email.findOne({ email });
+        return Email.findOne({ email }).populate("user");
     }
 
     async verifyPassword(email: Document, password: string): Promise<boolean> {
