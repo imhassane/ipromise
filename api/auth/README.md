@@ -16,9 +16,10 @@ I'm using some architecture to facilitate future modifications.<br />
  - [x] Adding a new user.
  - [x] Updating an user.
  - [x] Updating user's password.
- - [ ] Updating user's email address.
- - [ ] Deleting some user's data.
+ - [x] Updating user's email address.
+ - [x] Deleting some user's data.
  - [x] Authentication with user's credentials.
+ - [ ] Adding Helmet for security
  
 ##### How does the API work ?
 An user is represented by the <strong>User</strong> model defined by this schema.

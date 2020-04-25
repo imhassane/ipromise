@@ -1,7 +1,9 @@
-import {Request, Response, Router} from "express";
+import {NextFunction, Request, Response, Router} from "express";
 import Service from "../types/Service";
 import asyncMiddleware from "../middlewares/async";
 import ResourceNotFoundError from "../errors/ResourceNotFoundError";
+import NonAuthenticatedError from "../errors/NonAuthenticatedError";
+import NonAuthorizedError from "../errors/NonAuthorizedError";
 
 export default (router: Router, service: Service) => {
 
@@ -34,12 +36,44 @@ export default (router: Router, service: Service) => {
             const _email = await service.getEmailWithAddress(email);
             if (!_email)
                 throw new ResourceNotFoundError("The email address does not exist");
+
+            // @ts-ignore
+            if(!_email.isActive)
+                throw new NonAuthorizedError("This account has been deactivated, you cannot access it");
+
             user = await service.authenticate(_email, password);
 
             // @ts-ignore
             req.session.user = _email;
             return res.status(200).send(user);
         }
+    }));
+
+    router.get("/user/logout", asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+        if(req.session) {
+            req.session.destroy(err => {
+                if(err)
+                    return res.status(500).send("An error occurred when logging you out.");
+                return res.status(200).send("You've been successfully logged out");
+            });
+        }
+
+    }));
+
+    router.delete("/user/delete", asyncMiddleware(async (req: Request, res: Response) => {
+        // @ts-ignore
+        let { user } = req.session;
+        if(!user)
+            throw new NonAuthenticatedError("You are not authenticated");
+
+        await service.deleteUser(user._id);
+
+        // @ts-ignore
+        req.session.destroy(err => {
+            if(err)
+                return res.status(500).send("An error occurred when logging you out.");
+        });
+        return res.status(200).send("Your account has been successfully deactivated");
     }));
 
 }

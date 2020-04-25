@@ -37,6 +37,9 @@ export default interface Service {
 
     getEmailWithAddress(address: string): Promise<Document | null>
 
+    // Updating an email address.
+    updateEmailAddress(_id: string, email: string): Promise<Document | null>
+
     // Handling authentication.
     authenticate(email: Document, password: string): Promise<Document | null>
     logout(): Promise<Document | null>

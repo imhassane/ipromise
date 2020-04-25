@@ -5,6 +5,7 @@ import MalformedDataError from "../errors/MalformedDataError";
 import ResourceNotFoundError from "../errors/ResourceNotFoundError";
 import {Document} from "mongoose";
 import ResourceAlreadyExistsError from "../errors/ResourceAlreadyExistsError";
+import NonAuthorizedError from "../errors/NonAuthorizedError";
 
 export default class MongoService implements Service {
     repository: Repository;
@@ -52,6 +53,7 @@ export default class MongoService implements Service {
         const _user = await this.repository.deleteUser(_id);
         if(!_user)
             throw new ResourceNotFoundError("The user with the given ID does not exist");
+
         return _user;
     }
 
@@ -141,6 +143,11 @@ export default class MongoService implements Service {
 
     async logout(): Promise<Document | null> {
         return null;
+    }
+
+    async updateEmailAddress(_id: string, email: string): Promise<Document | null> {
+        const _email = await this.repository.updateEmailAddress(_id, email);
+        return _email;
     }
 
 }

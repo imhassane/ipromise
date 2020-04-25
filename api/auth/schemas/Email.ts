@@ -22,11 +22,13 @@ const EmailSchema = new Schema({
 EmailSchema.pre('save', async function() {
     // If it's the first time saving the email address.
     // We create a new user.
-    let user = new User();
-    user = await user.save();
+    if(this.isNew) {
+        let user = new User();
+        user = await user.save();
 
-    // @ts-ignore
-    this.user = user;
+        // @ts-ignore
+        this.user = user;
+    }
 });
 
 const Email = model("Email", EmailSchema);

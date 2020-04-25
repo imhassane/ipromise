@@ -38,7 +38,7 @@ export default class MongoRepository implements Repository {
     }
 
     deleteUser(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
-        return User.findOneAndUpdate({ _id }, { $set: { isActive: false } }, { new: true });
+        return Email.findOneAndUpdate({ _id }, { $set: { isActive: false } }, { new: true });
     }
 
     getOneUser(_id?: string, email?: string): DocumentQuery<Document | null, Document, {}> & {} {
@@ -69,6 +69,10 @@ export default class MongoRepository implements Repository {
 
     getEmailWithAddress(email: string): DocumentQuery<Document | null, Document, {}> & {} {
         return Email.findOne({ email }).populate("user");
+    }
+
+    updateEmailAddress(_id: string, email: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return Email.findOneAndUpdate({ _id }, { $set:{ email }}, {new: true});
     }
 
     async verifyPassword(email: Document, password: string): Promise<boolean> {
