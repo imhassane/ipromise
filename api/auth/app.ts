@@ -1,11 +1,28 @@
 import Express from "express";
 import BodyParser from "body-parser";
+import ExpressSession from "express-session";
 import routes from "./startup/routes";
 import MongoRepository from "./repos/MongoRepository";
 import MongoService from "./services/MongoService";
 
+const sessionCookieConfig = {
+    secret: process.env.SESSION_SECRET || 'secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 60 * 60 * 24 * 2
+    }
+};
+
 const application = Express();
 
+if(application.get('env') === 'production') {
+    application.set('trust proxy', 1);
+    // @ts-ignore
+    sessionCookieConfig.cookie.secure = true;
+}
+
+application.use(ExpressSession(sessionCookieConfig));
 application.use(BodyParser.json());
 
 const repository = new MongoRepository();

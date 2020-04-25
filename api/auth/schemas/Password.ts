@@ -11,6 +11,10 @@ const PasswordSchema = new Schema({
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
+PasswordSchema.methods.verifyPassword = function(pass: string): boolean {
+    return Bcrypt.compareSync(pass, this.hash);
+}
+
 PasswordSchema.pre('save', async function() {
     // Before saving we make sure to set all other password for the current user
     // as non active.

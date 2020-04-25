@@ -13,8 +13,8 @@ I'm using some architecture to facilitate future modifications.<br />
 
 ##### TODOs
 
- - [ ] Adding a new user.
- - [ ] Updating an user.
+ - [x] Adding a new user.
+ - [x] Updating an user.
  - [ ] Updating user's password.
  - [ ] Updating user's email address.
  - [ ] Deleting some user's data.

@@ -132,4 +132,15 @@ export default class MongoService implements Service {
         return _email;
     }
 
+    async authenticate(email: Document, password: string): Promise<Document | null> {
+        const validPassword = await this.repository.verifyPassword(email, password);
+        if(!validPassword)
+            throw new MalformedDataError("The password is not correct");
+        return email;
+    }
+
+    async logout(): Promise<Document | null> {
+        return null;
+    }
+
 }

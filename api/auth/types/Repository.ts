@@ -38,4 +38,7 @@ export default interface Repository {
 
     // Getting an email address with the email address.
     getEmailWithAddress(address: string): DocumentQuery<Document | null, Document, {}> & {}
+
+    // Verifying user's password.
+    verifyPassword(email: Document, password: string): Promise<boolean>
 }

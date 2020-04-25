@@ -36,4 +36,8 @@ export default interface Service {
     getEmail(_id: string): Promise<Document | null>
 
     getEmailWithAddress(address: string): Promise<Document | null>
+
+    // Handling authentication.
+    authenticate(email: Document, password: string): Promise<Document | null>
+    logout(): Promise<Document | null>
 }

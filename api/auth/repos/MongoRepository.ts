@@ -10,7 +10,9 @@ export default class MongoRepository implements Repository {
     static LOCALHOST_DB = "mongodb://localhost:27017/ipromise-auth";
     static MONGO_OPTIONS = {
         useNewUrlParser: true,
-        useCreateIndex: true
+        useCreateIndex: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false
     };
 
     async connect(): Promise<any> {
@@ -67,6 +69,13 @@ export default class MongoRepository implements Repository {
 
     getEmailWithAddress(email: string): DocumentQuery<Document | null, Document, {}> & {} {
         return Email.findOne({ email });
+    }
+
+    async verifyPassword(email: Document, password: string): Promise<boolean> {
+        const _pass = await Password.findOne({ email, isActive: true });
+        // @ts-ignore
+        const result = _pass.verifyPassword(password);
+        return result;
     }
 
 }
