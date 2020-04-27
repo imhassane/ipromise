@@ -2,6 +2,7 @@ defmodule Router do
   use Plug.Router
 
   alias Types.Promise
+  alias Service.{PromiseService}
 
   plug(Plug.Logger)
 
@@ -12,22 +13,20 @@ defmodule Router do
   plug :dispatch
 
   get "/" do
-    data = :database
-    |> Mongo.find("promises", %{})
-    |> Enum.to_list
-    |> IO.inspect
+    response = PromiseService.get_promises()
 
-    send_resp(conn, 200, "data")
+    handle_response(conn, response)
   end
 
   get "/create" do
-    p = Promise.new()
-    data = p |> Jason.encode! |> Jason.decode!
 
-    :database
-    |> Mongo.insert_one("promises", data)
+    data = "{\"title\":\"Aller à la salle de sport\"}"
+    %{"title" => title} = data |> Jason.decode!
 
-    send_resp(conn, 200, Jason.encode! data)
+    promise = Promise.new(title)
+    response = promise |> PromiseService.add_promise()
+
+    handle_response(conn, response)
   end
 
   get "/delete" do
@@ -37,5 +36,16 @@ defmodule Router do
 
   match _ do
     send_resp(conn, 404, "oops!")
+  end
+
+  defp handle_response(conn, response) do
+    %{ code: code, message: message } =
+      case response do
+        {:ok, message} -> %{code: 200, message: message}
+        {:malformed_data, message} -> %{code: 400, message: message}
+        {_, message} -> %{code: 500, message: message}
+      end
+
+    send_resp(conn, code, message)
   end
 end

@@ -9,6 +9,16 @@ defmodule Types.PromiseTest do
     assert p.title == nil and p.frequency == nil and p.created_at != nil and p.updated_at != nil and p.user == nil
   end
 
+  test "creating a new promise with a title" do
+    p = Promise.new("going to the gym")
+    assert p.title != nil and p.title == "going to the gym"
+  end
+
+  test "creating a new promise with a wrong title" do
+    {response, _ } = Promise.new(5)
+    assert response == :error
+  end
+
   test "adding a frequency with a frequency as argument" do
     f = Frequency.new()
     {:ok, p} = Promise.new() |> Promise.add_frequency(f)
@@ -38,6 +48,11 @@ defmodule Types.PromiseTest do
   test "adding a frequency with non correct values atoms" do
     {response, _} = Promise.new() |> Promise.add_frequency(:daily)
     assert response == :error
+  end
+
+  test "test if a promise is valid with non valid promise" do
+    p = Promise.new()
+    assert Promise.valid?(p) == false
   end
 
 end
