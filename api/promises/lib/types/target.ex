@@ -1,4 +1,6 @@
 defmodule Types.Target do
+
+  @derive Jason.Encoder
   defstruct _id: nil, day: nil, done: false
 
   def new(), do: %Types.Target{ day: Date.day_of_week(Date.utc_today), done: false }

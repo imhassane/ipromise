@@ -1,5 +1,6 @@
 defmodule Types.Frequency do
 
+  @derive Jason.Encoder
   defstruct _id: nil, type: :daily, repeat: 0, targets: nil, created_at: nil, updated_at: nil
 
   # TODO: Changer le naivedatetime pour le faire correspondre au timezone de l'utilisateur.
