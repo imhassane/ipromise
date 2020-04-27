@@ -13,9 +13,11 @@ defmodule Router do
   plug :dispatch
 
   get "/" do
-    response = PromiseService.get_promises()
+    PromiseService.get_promises() |> handle_response(conn)
+  end
 
-    handle_response(conn, response)
+  get "/details/:id" do
+    PromiseService.get_promise(id) |> handle_response(conn)
   end
 
   get "/create" do
@@ -24,25 +26,26 @@ defmodule Router do
     %{"title" => title} = data |> Jason.decode!
 
     promise = Promise.new(title)
-    response = promise |> PromiseService.add_promise()
-
-    handle_response(conn, response)
+    promise
+      |> PromiseService.add_promise()
+      |> handle_response(conn)
   end
 
-  get "/delete" do
-    :database |> Mongo.delete_many("promises", %{})
-    send_resp(conn, 200, "deleted successfully")
+  get "/delete/:id" do
+    PromiseService.delete_promise(id)
+    |> handle_response(conn)
   end
 
   match _ do
     send_resp(conn, 404, "oops!")
   end
 
-  defp handle_response(conn, response) do
+  defp handle_response(response, conn) do
     %{ code: code, message: message } =
       case response do
         {:ok, message} -> %{code: 200, message: message}
         {:malformed_data, message} -> %{code: 400, message: message}
+        {:not_found, message} -> %{code: 404, message: message}
         {_, message} -> %{code: 500, message: message}
       end
 

@@ -46,17 +46,23 @@ defmodule Types.Promise do
     "created_at" => created_at,
     "updated_at" => updated_at,
     "claps" => claps,
+    "frequency" => frequency,
     "is_public" => is_public,
-    "is_visible" => is_visible
+    "is_visible" => is_visible,
+    "comments" => comments,
+    "user" => user
   } = _promise) do
     %Types.Promise{
-      id: Bson.ObjectId.decode(object_id) or id,
+      id: Bson.ObjectId.decode!(object_id) or id,
       title: title,
       created_at: NaiveDateTime.from_iso8601(created_at),
       updated_at: NaiveDateTime.from_iso8601(updated_at),
       claps: claps,
       is_public: is_public,
-      is_visible: is_visible
+      is_visible: is_visible,
+      frequency: frequency,
+      comments: comments,
+      user: user
     }
   end
 end
