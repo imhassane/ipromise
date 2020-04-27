@@ -17,7 +17,12 @@ defmodule Service.PromiseService do
 
   # Getting a promise and displaying its details.
   def get_promise(id) when is_binary(id) do
-    id = BSON.ObjectId.decode!(id)
+    try do
+      id = BSON.ObjectId.decode!(id)
+    rescue
+      e in FunctionClauseError -> {:not_found, "The promise with the given ID does not exist"}
+    end
+
     promise = PromiseRepo.get_promise(id)
     if promise do
       promise = %{ promise | "_id" => BSON.ObjectId.encode!(id) } |> Jason.encode!()
@@ -51,11 +56,15 @@ defmodule Service.PromiseService do
 
   # Deleting a promise.
   def delete_promise(id) when is_binary(id) do
-    with {:ok, promise} <- get_promise(id),
-               _promise <- Jason.decode!(promise) do
-      # TODO: This is not working as expected
-      PromiseRepo.delete_promise(id)
-      {:ok, "The promise has been deleted successfully"}
+    try do
+      with {:ok, promise} <- get_promise(id),
+                 _promise <- Jason.decode!(promise) do
+        # TODO: This is not working as expected
+        PromiseRepo.delete_promise(id)
+        {:ok, "The promise has been deleted successfully"}
+      end
+    rescue
+      e in FunctionClauseError -> {:not_found, "The promise with the given ID does not exist"}
     end
   end
 
