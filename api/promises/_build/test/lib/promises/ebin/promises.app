@@ -1,0 +1,9 @@
+{application,promises,
+             [{applications,[kernel,stdlib,elixir,logger]},
+              {description,"promises"},
+              {modules,['Elixir.Promises','Elixir.Promises.Application',
+                        'Elixir.Types.Frequency','Elixir.Types.Promise',
+                        'Elixir.Types.Target']},
+              {registered,[]},
+              {vsn,"0.1.0"},
+              {mod,{'Elixir.Promises.Application',[]}}]}.
