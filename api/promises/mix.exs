@@ -14,7 +14,7 @@ defmodule Promises.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :mongodb, :poolboy],
       mod: {Promises.Application, []}
     ]
   end
@@ -23,7 +23,9 @@ defmodule Promises.MixProject do
   defp deps do
     [
       {:plug_cowboy, "~> 2.0"},
-      {:jason, "~> 1.2"}
+      {:jason, "~> 1.2"},
+      {:mongodb, "~> 0.5.1"},
+      {:poolboy, "~> 1.5.2"}
     ]
   end
 end
