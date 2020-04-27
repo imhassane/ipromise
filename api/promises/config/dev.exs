@@ -1,4 +1,4 @@
 use Mix.Config
 
-config :promises, port: 8080
+config :promises, port: 8000
 

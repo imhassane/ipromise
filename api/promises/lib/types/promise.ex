@@ -3,7 +3,7 @@ defmodule Types.Promise do
   alias Types.Frequency
 
   @derive Jason.Encoder
-  defstruct _id: nil, title: nil, frequency: nil, created_at: nil, updated_at: nil, user: nil, claps: 0, comments: [], is_public: false
+  defstruct id: nil, title: nil, frequency: nil, created_at: nil, updated_at: nil, user: nil, claps: 0, comments: [], is_public: false
 
   def new(), do: %Types.Promise{created_at: NaiveDateTime.utc_now, updated_at: NaiveDateTime.utc_now}
 
