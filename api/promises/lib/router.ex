@@ -8,7 +8,14 @@ defmodule Router do
   plug :dispatch
 
   get "/" do
-    send_resp(conn, 200, "welcome")
+    data = :database
+    |> Mongo.find("promises", %{})
+    |> Enum.to_list
+    send_resp(conn, 200, data)
+  end
+
+  def "/create" do
+    
   end
 
   match _ do
