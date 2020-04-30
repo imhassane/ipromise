@@ -20,18 +20,15 @@ defmodule Router do
     PromiseService.get_promise(id) |> handle_response(conn)
   end
 
-  get "/create" do
+  post "/create" do
 
-    data = "{\"title\":\"Aller à la salle de sport\"}"
-    %{"title" => title} = data |> Jason.decode!
-
-    promise = Promise.new(title)
+    promise = Promise.new(conn.body_params)
     promise
       |> PromiseService.add_promise()
       |> handle_response(conn)
   end
 
-  get "/delete/:id" do
+  delete "/delete/:id" do
     PromiseService.delete_promise(id)
     |> handle_response(conn)
   end

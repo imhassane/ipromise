@@ -35,12 +35,13 @@ defmodule Service.PromiseService do
   def get_promise(_), do: {:not_found, "The promise with the given ID does not exist"}
 
   # Adding a new promise.
-  def add_promise(%Promise{ title: title } = promise) do
+  def add_promise(%{ title: title } = promise) do
 
     if title == nil or String.length(title) < 5 do
       {:malformed_data, "The title should be at least 5 characters"}
     end
 
+    promise = Promise.new(title)
     promise = promise |> PromiseRepo.add_promise()
 
     case promise do
@@ -50,7 +51,7 @@ defmodule Service.PromiseService do
 
   end
 
-  def add_promise(_), do: {:malformed_data, "Unable to add the promise, the given data is not correct"}
+  def add_promise(_), do: {:malformed_data, "Unable to add the promise, the title is not correct"}
 
   # TODO: Updating a promise.
 

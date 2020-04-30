@@ -3,7 +3,7 @@ defmodule Repo.FrequencyRepo do
   @collection "frequencies"
 
   # Get a promise's frequency.
-  def get_frequency(promise_id) do
+  def get_frequency(id) do
     :database |> Mongo.find_one(@collection, %{ "promise" => id })
   end
 
