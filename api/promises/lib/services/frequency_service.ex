@@ -8,7 +8,10 @@ defmodule Service.FrequencyService do
   end
 
   # Adding a new Frequency.
-  def add_frequency(promise_id, %{ "type" => _type, "count" => _count } = frequency) do
+  def add_frequency(promise_id, %{ "type" => type, "count" => count } = frequency) do
+
+    unless String.length(type) > 5 and count > 0, do: {:malformed_data, "The type should have at least 5 characters and the frequency 1"}
+
     try do
       promise_id = BSON.ObjectId.decode!(promise_id)
       frequency = Map.put frequency, "promise", promise_id
@@ -36,6 +39,9 @@ defmodule Service.FrequencyService do
 
   # TODO: Updating the frequency.
   def update_frequency(promise_id, %{"type" => _title, "count" => _count} = frequency) do
+
+    unless String.length(type) > 5 and count > 0, do: {:malformed_data, "The type should have at least 5 characters and the frequency 1"}
+
     try do
       id = BSON.ObjectId.decode!(promise_id)
       frequency = Map.put frequency, "promise", id
