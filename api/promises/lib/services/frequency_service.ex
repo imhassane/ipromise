@@ -2,7 +2,7 @@ defmodule Service.FrequencyService do
 
   alias Repo.FrequencyRepo
 
-  # TODO: Get the frequency of a promise.
+  # Get the frequency of a promise.
   def get_promise_frequency() do
 
   end

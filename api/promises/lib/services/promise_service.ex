@@ -54,9 +54,12 @@ defmodule Service.PromiseService do
   def add_promise(_), do: {:malformed_data, "Unable to add the promise, the title is not correct"}
 
   # TODO: Updating a promise.
+  def update_promise(id) do
+
+  end
 
   # Deleting a promise.
-  def delete_promise(id) when is_binary(id) do
+  def delete_promise(id) do
     try do
       with {:ok, promise} <- get_promise(id),
                  _promise <- Jason.decode!(promise) do

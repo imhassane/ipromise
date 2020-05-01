@@ -25,9 +25,8 @@ defmodule Repo.PromiseRepo do
   end
 
   # Updating a promise
-  def update_promise(%Promise{ id: id } = promise) do
-    data = Jason.encode! promise
-    :database |> Mongo.update_one(@collection, %{"_id" => id}, %{"$set": Jason.decode! data})
+  def update_promise(%{ id: id } = promise) do
+    :database |> Mongo.update_one(@collection, %{"_id" => id}, %{"$set": promise })
   end
 
   # Deleting a promise
