@@ -82,6 +82,9 @@ defmodule Router.PromisesTest do
   end
 
   test "updating a promise" do
+    # Waiting to create a promise.
+    Process.sleep(100)
+
     %{ "_id" => id } = get_promise()
     conn =
       :put
@@ -100,6 +103,23 @@ defmodule Router.PromisesTest do
 
     assert conn.state == :sent
     assert conn.status == 404
+  end
+
+  test "deleting a promise" do
+
+    # Waiting to create a promise.
+    Process.sleep(100)
+
+    {:ok, promises} = PromiseService.get_promises()
+    %{"_id" => id} = promises |> Kernel.hd |> Jason.decode!
+
+    conn =
+      :delete
+      |> conn("/delete/#{id}", %{})
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 200
   end
 
   test "returns 404" do
