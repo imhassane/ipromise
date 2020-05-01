@@ -1,7 +1,6 @@
 defmodule Router do
   use Plug.Router
 
-  alias Types.Promise
   alias Service.{PromiseService, FrequencyService, TargetService}
 
   plug(Plug.Logger)
@@ -23,10 +22,13 @@ defmodule Router do
   end
 
   post "/create" do
-    promise = Promise.new(conn.body_params)
-    promise
-      |> PromiseService.add_promise()
-      |> handle_response(conn)
+    PromiseService.add_promise(conn.body_params)
+    |> handle_response(conn)
+  end
+
+  put "/update/:id" do
+    PromiseService.update_promise(id, conn.body_params)
+    |> handle_response(conn)
   end
 
   delete "/delete/:id" do
@@ -62,7 +64,7 @@ defmodule Router do
         {:malformed_data, message} -> %{code: 400, message: message}
         {:not_found, message} -> %{code: 404, message: message}
         {:error, message} -> %{code: 500, message: message}
-        {_, message} -> %{code: 500, message: "An internal error occurred"}
+        {_, _} -> %{code: 500, message: "An internal error occurred"}
       end
 
       # TODO: Adding logging for errors.

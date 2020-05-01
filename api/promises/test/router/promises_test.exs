@@ -36,6 +36,16 @@ defmodule Router.PromisesTest do
     assert conn.status == 404
   end
 
+  test "adding an invalid promise" do
+    conn =
+      :post
+      |> conn("/create", "")
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 400
+  end
+
   test "returns 404" do
     conn =
     :get

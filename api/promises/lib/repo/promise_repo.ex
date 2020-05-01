@@ -8,7 +8,6 @@ defmodule Repo.PromiseRepo do
   def get_promises() do
     :database
       |> Mongo.find(@collection, %{})
-      |> Enum.to_list()
   end
 
   # Getting a promise and displaying its details.
@@ -25,7 +24,7 @@ defmodule Repo.PromiseRepo do
   end
 
   # Updating a promise
-  def update_promise(%{ id: id } = promise) do
+  def update_promise(%{ "_id" => id } = promise) do
     :database |> Mongo.update_one(@collection, %{"_id" => id}, %{"$set": promise })
   end
 
