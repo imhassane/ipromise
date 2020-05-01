@@ -115,9 +115,19 @@ defmodule Service.PromiseService do
       "frequency" => BSON.ObjectId.encode!(frequency)
     }
   end
-  defp convert_promise_to_json(%{ "_id" => id } = promise) when not is_binary(id) do
+  defp convert_promise_to_json(%{ "_id" => id, "frequency" => frequency } = promise)
+       when not is_binary(id) and is_nil(frequency)
+  do
     %{ promise |
       "_id" => BSON.ObjectId.encode!(id)
+    }
+  end
+  defp convert_promise_to_json(%{ "_id" => id, "frequency" => frequency } = promise)
+       when not is_nil(frequency) and is_binary(id)
+  do
+    %{
+      promise |
+      "frequency" => BSON.ObjectId.encode!(frequency)
     }
   end
   defp convert_promise_to_json(promise), do: promise
