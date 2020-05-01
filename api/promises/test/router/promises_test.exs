@@ -81,6 +81,17 @@ defmodule Router.PromisesTest do
     assert conn.status == 404
   end
 
+  test "updating a promise" do
+    %{ "_id" => id } = get_promise()
+    conn =
+      :put
+      |> conn("/update/#{id}", %{"title" => "Hitting the gym"})
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 200
+  end
+
   test "deleting an invalid promise" do
     conn =
       :delete
@@ -99,5 +110,10 @@ defmodule Router.PromisesTest do
 
     assert conn.state   == :sent
     assert conn.status  == 404
+  end
+
+  defp get_promise() do
+    {:ok, promises} = PromiseService.get_promises()
+    promises |> Kernel.hd |> Jason.decode!
   end
 end

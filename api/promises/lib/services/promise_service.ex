@@ -84,7 +84,7 @@ defmodule Service.PromiseService do
       end
 
     rescue
-      _ in KeyError -> {:not_found, "The promise with the given ID does not exist"}
+      _ in FunctionClauseError -> {:not_found, "The promise with the given ID does not exist"}
       # TODO: capture other exceptions
     end
   end
