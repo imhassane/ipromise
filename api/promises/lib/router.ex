@@ -53,6 +53,12 @@ defmodule Router do
     |> handle_response(conn)
   end
 
+  # Target routers.
+
+  post "/target/create/:frequency_id" do
+
+  end
+
   match _ do
     send_resp(conn, 404, "oops!")
   end
