@@ -3,6 +3,7 @@ defmodule Router.PromisesTest do
   use Plug.Test
 
   alias Router
+  alias Service.PromiseService
 
   @options Router.init([])
 
@@ -39,11 +40,55 @@ defmodule Router.PromisesTest do
   test "adding an invalid promise" do
     conn =
       :post
-      |> conn("/create", "")
+      |> conn("/create", %{ "titler" => ""})
       |> Router.call(@options)
 
     assert conn.state == :sent
     assert conn.status == 400
+  end
+
+  test "adding a promise with an invalid title" do
+
+    # The title is invalid if its length is lower than five.
+    conn =
+      :post
+      |> conn("/create", %{ "title" => "cry" })
+      |> Router.call(@options)
+
+    assert conn.state   == :sent
+    assert conn.status  == 400
+  end
+
+  test "adding a promise" do
+
+    # The title is invalid if its length is lower than five.
+    conn =
+      :post
+      |> conn("/create", %{ "title" => "going to the gym" })
+      |> Router.call(@options)
+
+    assert conn.state   == :sent
+    assert conn.status  == 200
+  end
+
+  test "updating an invalid promise" do
+    conn =
+      :put
+      |> conn("/update/hello", "")
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 404
+  end
+
+  test "deleting an invalid promise" do
+    conn =
+      :delete
+      |> conn("/delete/hello", "")
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 404
   end
 
   test "returns 404" do

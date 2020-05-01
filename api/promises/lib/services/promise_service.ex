@@ -19,7 +19,7 @@ defmodule Service.PromiseService do
       promise = PromiseRepo.get_promise(id)
       if promise do
         promise =
-          promise|> convert_promise_to_json |> Jason.encode!
+          promise|> convert_promise_to_json
         {:ok, promise}
       else
         {:not_found, "The promise with the given ID does not exist"}
@@ -53,6 +53,13 @@ defmodule Service.PromiseService do
   def update_promise(id, %{"title" => _title} = promise) do
     try do
       id = BSON.ObjectId.decode!(id)
+
+      promise =
+        case Map.has_key?( promise, "frequency") do
+          true -> %{ promise | "frequency" => BSON.ObjectId.decode!(promise["frequency"]) }
+          false -> promise
+        end
+
       result =
         promise
         |> Map.put("_id", id)
@@ -66,14 +73,13 @@ defmodule Service.PromiseService do
         end
 
       unless result == :ok do
-          {:not_found, "The promisetttt with the given ID does not exist"}
+          {:not_found, "The promise with the given ID does not exist"}
       else
         id = BSON.ObjectId.encode!(id)
         promise =
           promise
             |> Map.put("_id", id)
             |> convert_promise_to_json
-            |> Jason.encode!
         {:ok, promise}
       end
 
