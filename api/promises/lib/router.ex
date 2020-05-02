@@ -53,10 +53,15 @@ defmodule Router do
     |> handle_response(conn)
   end
 
-  # Target routers.
-
+  # Target routes.
   post "/target/create/:frequency_id" do
+    TargetService.add_target(frequency_id, conn.body_params)
+    |> handle_response(conn)
+  end
 
+  put "/target/update/:id" do
+    TargetService.update_target(id, conn.body_params)
+    |> handle_response(conn)
   end
 
   match _ do
