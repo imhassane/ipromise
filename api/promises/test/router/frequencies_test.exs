@@ -6,6 +6,8 @@ defmodule Router.FrequenciesTest do
 
   @options Router.init([])
 
+  # TODO: ajout des tests pour les requetes crud.
+
   test "Trying to add a frequency with non existant promise" do
     conn =
       :post

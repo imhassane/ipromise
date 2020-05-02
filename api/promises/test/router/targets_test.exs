@@ -5,4 +5,37 @@ defmodule Router.TargetsTest do
   alias Router
   alias Service.TargetService
 
+  @options Router.init([])
+
+  # TODO: ajout des tests pour les requetes crud.
+
+  test "Adding a target with a non valid frequency" do
+    conn =
+      :post
+      |> conn("/target/hello", %{})
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 404
+  end
+
+  test "Updating a target with a non valid id" do
+    conn =
+      :update
+      |> conn("/target/hello", %{})
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 404
+  end
+
+  test "deleting a target with a non valid id" do
+    conn =
+      :delete
+      |> conn("/target/hello", %{})
+      |> Router.call(@options)
+
+    assert conn.state == :sent
+    assert conn.status == 404
+  end
 end
