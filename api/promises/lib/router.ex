@@ -64,6 +64,11 @@ defmodule Router do
     |> handle_response(conn)
   end
 
+  delete "/target/delete/:id" do
+    TargetService.delete_target(id)
+    |> handle_response(conn)
+  end
+
   match _ do
     send_resp(conn, 404, "oops!")
   end

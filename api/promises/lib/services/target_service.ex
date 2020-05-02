@@ -47,7 +47,24 @@ defmodule Service.TargetService do
     end
   end
 
-  # TODO: Deleting the target.
+  # Deleting the target.
+  def delete_target(id) do
+    try do
+      id = BSON.ObjectId.decode!(id)
+      target = TargetRepo.get_target(id)
+
+      unless target do
+        {:not_found, "The target with the given ID does not exist"}
+      else
+        TargetRepo.delete_target(id)
+        target = convert_target_to_json(target)
+        {:ok, target}
+      end
+    rescue
+      _ in FunctionClauseError -> {:not_found, "The target with the given ID does not exist"}
+                            _  -> {:error, "An error occurred internally"}
+    end
+  end
 
   defp is_valid?(%{"day" => day, "done" => done}) when is_boolean(done) do
     is_valid?(%{"day" => day})

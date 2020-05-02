@@ -22,7 +22,7 @@ defmodule Repo.TargetRepo do
   end
 
    # Deleting the target.
-   def delete_target(%{"_id" => id}) do
+   def delete_target(id) do
      :database |> Mongo.delete_one(@collection, %{"_id" => id})
   end
 end
