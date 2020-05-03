@@ -1,14 +1,9 @@
 defmodule Endpoint do
   use Plug.Router
 
-  alias Service.{PromiseService, FrequencyService, TargetService}
-
   plug(Plug.Logger)
-
   plug :match
-
   plug(Plug.Parsers, parsers: [:json], json_decoder: Jason)
-
   plug :dispatch
 
   forward "/promises", to: Routes.PromiseRouter
