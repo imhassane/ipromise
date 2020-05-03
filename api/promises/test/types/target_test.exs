@@ -1,7 +1,5 @@
 defmodule Types.TargetTest do
   use ExUnit.Case
-  doctest Promises
-
   alias Types.Target
 
   test "Create new target" do

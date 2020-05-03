@@ -25,19 +25,4 @@ defmodule Routes.PromiseRouter do
     PromiseService.delete_promise(id)
     |> handle_response(conn)
   end
-
-  def handle_response(response, conn) do
-    %{ code: code, message: message } =
-      case response do
-        {:ok, message} -> %{code: 200, message: message}
-        {:malformed_data, message} -> %{code: 400, message: message}
-        {:not_found, message} -> %{code: 404, message: message}
-        {:error, message} -> %{code: 500, message: message}
-        {_, _} -> %{code: 500, message: "An internal error occurred"}
-      end
-
-    # TODO: Adding logging for errors.
-    message = Jason.encode! %{ data: message }
-    send_resp(conn, code, message)
-  end
 end

@@ -15,6 +15,7 @@ defmodule Repo.FrequencyRepo do
   # Adding a new Frequency.
   def add_frequency(frequency) do
     :database |> Mongo.insert_one!(@collection, frequency)
+    # TODO: update the promise, adding its frequency.
   end
 
   # Updating the frequency.

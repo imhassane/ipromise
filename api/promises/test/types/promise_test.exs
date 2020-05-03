@@ -1,7 +1,5 @@
 defmodule Types.PromiseTest do
   use ExUnit.Case
-  doctest Promises
-
   alias Types.{Promise, Frequency}
 
   test "creating a new promise" do

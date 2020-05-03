@@ -1,7 +1,5 @@
 defmodule Types.FrequencyTest do
   use ExUnit.Case
-  doctest Promises
-
   alias Types.{Frequency, Target}
 
   test "create a new frequency" do
