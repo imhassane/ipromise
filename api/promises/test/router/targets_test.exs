@@ -7,6 +7,20 @@ defmodule Router.TargetsTest do
 
   @options Router.init([])
 
+  test "Getting targets for a frequency" do
+    {:ok, promises} = PromiseService.get_promises()
+    %{"_id" => id} = promises |> Kernel.hd |> Jason.decode!
+    {:ok, %{"_id" => id}} = FrequencyService.get_promise_frequency(id)
+
+    conn =
+      :get
+      |> conn("/target/#{id}", "")
+      |> Router.call(@options)
+
+      assert conn.state == :sent
+      assert conn.status == 200
+  end
+
   test "Adding a target" do
     {:ok, promises} = PromiseService.get_promises()
     %{"_id" => id} = promises |> Kernel.hd |> Jason.decode!
