@@ -1,13 +1,7 @@
 defmodule Routes.PromiseRouter do
-  use Plug.Router
-
+  use BaseRouter
   alias Service.PromiseService
 
-  plug :match
-
-  plug(Plug.Parsers, parsers: [:json], json_decoder: Jason)
-
-  plug :dispatch
 
   get "/" do
     PromiseService.get_promises() |> handle_response(conn)

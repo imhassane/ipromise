@@ -1,13 +1,6 @@
 defmodule Routes.TargetRouter do
-  use Plug.Router
-
+  use BaseRouter
   alias Service.TargetService
-
-  plug :match
-
-  plug(Plug.Parsers, parsers: [:json], json_decoder: Jason)
-
-  plug :dispatch
 
   get "/:frequency_id" do
     TargetService.get_frequency_targets(frequency_id)

@@ -1,13 +1,6 @@
 defmodule Routes.FrequencyRouter do
-  use Plug.Router
-
+  use BaseRouter
   alias Service.FrequencyService
-
-  plug :match
-
-  plug(Plug.Parsers, parsers: [:json], json_decoder: Jason)
-
-  plug :dispatch
 
   post "/:promise_id" do
     FrequencyService.add_frequency(promise_id, conn.body_params)
