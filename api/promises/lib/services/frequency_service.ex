@@ -3,7 +3,7 @@ defmodule Service.FrequencyService do
   alias Repo.FrequencyRepo
 
   # Get the frequency of a promise.
-  def get_promise_frequency() do
+  def get_promise_frequency(id) do
 
   end
 
@@ -78,9 +78,12 @@ defmodule Service.FrequencyService do
       id = BSON.ObjectId.decode!(promise_id)
       frequency = FrequencyRepo.get_promise_frequency(id)
 
-      FrequencyRepo.delete_promise_frequency(id)
-
-      {:ok, encode_frequency(frequency)}
+      if frequency do
+        FrequencyRepo.delete_promise_frequency(id)
+        {:ok, encode_frequency(frequency)}
+      else
+        {:not_found, "The frequency with the given promise ID does not exist"}
+      end
     rescue
       _ in FunctionClauseError -> {:not_found, "The promise with the given ID doesn't exist"}
       _ -> {:server_error, nil }
