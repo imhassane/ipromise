@@ -50,5 +50,6 @@ time won't be mutable. <br/>
 
 Before each request, we'll have to verify if the user is authenticated by sending a token to the authentication api.
 
-###### Future options
-I'd like to use GraphQL for performances but I'll keep it in my mind.
+###### Future optimizations
+- [ ] Adding the populate to fetch once a frequency and its targets
+- [ ] GraphQL or gRPC for faster requests

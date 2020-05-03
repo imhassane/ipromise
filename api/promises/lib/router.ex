@@ -54,6 +54,16 @@ defmodule Router do
   end
 
   # Target routes.
+  get "/target/:frequency_id" do
+    TargetService.get_frequency_targets(frequency_id)
+    |> handle_response(conn)
+  end
+
+  get "/target/details/:id" do
+    TargetService.get_target(id)
+    |> handle_response(conn)
+  end
+
   post "/target/create/:frequency_id" do
     TargetService.add_target(frequency_id, conn.body_params)
     |> handle_response(conn)

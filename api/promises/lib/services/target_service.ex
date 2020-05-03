@@ -21,6 +21,22 @@ defmodule Service.TargetService do
     end
   end
 
+  # Getting a target
+  def get_target(id) do
+    try do
+      id = BSON.ObjectId.decode!(id)
+      target = TargetRepo.get_target(id)
+      if target do
+        target = convert_target_to_json(target)
+        {:ok, target}
+      else
+        {:not_found, "The target with the given ID does not exist"}
+      end
+    rescue
+      _ in FunctionClauseError -> {:not_found, "The frequency with the given ID does not exist"}
+    end
+  end
+
   # Adding a new target.
   def add_target(frequency, target) do
     unless is_valid?(target) do
