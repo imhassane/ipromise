@@ -4,7 +4,18 @@ defmodule Service.FrequencyService do
 
   # Get the frequency of a promise.
   def get_promise_frequency(id) do
+    try do
+      id = BSON.ObjectId.decode!(id)
+      frequency = FrequencyRepo.get_promise_frequency(id)
+      if frequency do
+        {:ok, encode_frequency(frequency)}
+      else
+        {:not_found, "The frequency for the given promise ID does not exist"}
+      end
 
+    rescue
+      _ in FunctionClauseError -> {:not_found, "The frequency for the given promise ID does not exist"}
+    end
   end
 
   # Adding a new Frequency.
