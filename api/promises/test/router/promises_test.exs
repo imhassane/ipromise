@@ -1,17 +1,23 @@
-defmodule Router.PromisesTest do
+defmodule Endpoint.PromisesTest do
   use ExUnit.Case
   use Plug.Test
 
-  alias Router
+  alias Endpoint
   alias Service.PromiseService
 
-  @options Router.init([])
+  @options Endpoint.init([])
+
+  @base     "/promises"
+  @details  "/promises"
+  @create   "/promises"
+  @update   "/promises"
+  @delete   "/promises"
 
   test "get list of promises" do
     conn =
       :get
-      |> conn("/", "")
-      |> Router.call(@options)
+      |> conn(@base, "")
+      |> Endpoint.call(@options)
 
       assert conn.state   == :sent
       assert conn.status  == 200
@@ -20,8 +26,8 @@ defmodule Router.PromisesTest do
   test "get a non valid promise" do
     conn =
       :get
-      |> conn("/details/5ea72b266006b85047597b29", "")
-      |> Router.call(@options)
+      |> conn("#{@details}/5ea72b266006b85047597b29", "")
+      |> Endpoint.call(@options)
 
       assert conn.state == :sent
       assert conn.status == 404
@@ -30,8 +36,8 @@ defmodule Router.PromisesTest do
   test "get a promise with an invalid argument" do
     conn =
       :get
-      |> conn("/details/5ea72b266006", "")
-      |> Router.call(@options)
+      |> conn("#{@details}/5ea72b266006", %{})
+      |> Endpoint.call(@options)
 
     assert conn.state == :sent
     assert conn.status == 404
@@ -40,8 +46,8 @@ defmodule Router.PromisesTest do
   test "adding an invalid promise" do
     conn =
       :post
-      |> conn("/create", %{ "titler" => ""})
-      |> Router.call(@options)
+      |> conn(@create, %{ "titler" => ""})
+      |> Endpoint.call(@options)
 
     assert conn.state == :sent
     assert conn.status == 400
@@ -52,8 +58,8 @@ defmodule Router.PromisesTest do
     # The title is invalid if its length is lower than five.
     conn =
       :post
-      |> conn("/create", %{ "title" => "cry" })
-      |> Router.call(@options)
+      |> conn(@create, %{ "title" => "cry" })
+      |> Endpoint.call(@options)
 
     assert conn.state   == :sent
     assert conn.status  == 400
@@ -64,8 +70,8 @@ defmodule Router.PromisesTest do
     # The title is invalid if its length is lower than five.
     conn =
       :post
-      |> conn("/create", %{ "title" => "going to the gym" })
-      |> Router.call(@options)
+      |> conn(@create, %{ "title" => "going to the gym" })
+      |> Endpoint.call(@options)
 
     assert conn.state   == :sent
     # Will return 404 if the database is empty.
@@ -75,8 +81,8 @@ defmodule Router.PromisesTest do
   test "updating an invalid promise" do
     conn =
       :put
-      |> conn("/update/hello", "")
-      |> Router.call(@options)
+      |> conn("#{@update}/hello", "")
+      |> Endpoint.call(@options)
 
     assert conn.state == :sent
     assert conn.status == 404
@@ -87,8 +93,8 @@ defmodule Router.PromisesTest do
     %{ "_id" => id } = get_promise()
     conn =
       :put
-      |> conn("/update/#{id}", %{"title" => "Hitting the gym"})
-      |> Router.call(@options)
+      |> conn("#{@update}/#{id}", %{"title" => "Hitting the gym"})
+      |> Endpoint.call(@options)
 
     assert conn.state == :sent
     # Will return 404 if the database is empty.
@@ -98,8 +104,8 @@ defmodule Router.PromisesTest do
   test "deleting an invalid promise" do
     conn =
       :delete
-      |> conn("/delete/hello", "")
-      |> Router.call(@options)
+      |> conn("#{@delete}/hello", "")
+      |> Endpoint.call(@options)
 
     assert conn.state == :sent
     assert conn.status == 404
@@ -111,8 +117,8 @@ defmodule Router.PromisesTest do
 
     conn =
       :delete
-      |> conn("/delete/#{id}", %{})
-      |> Router.call(@options)
+      |> conn("#{@delete}/#{id}", %{})
+      |> Endpoint.call(@options)
 
     assert conn.state == :sent
     # Will return 404 if the database is empty.
@@ -123,7 +129,7 @@ defmodule Router.PromisesTest do
     conn =
     :get
     |> conn("/missing", "")
-    |> Router.call(@options)
+    |> Endpoint.call(@options)
 
     assert conn.state   == :sent
     assert conn.status  == 404

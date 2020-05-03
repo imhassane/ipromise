@@ -8,7 +8,7 @@ defmodule Promises.Application do
 
 
     children = [
-      {Plug.Cowboy, scheme: :http, plug: Router, options: [port: cowboy_port()]},
+      {Plug.Cowboy, scheme: :http, plug: Endpoint, options: [port: cowboy_port()]},
       worker(Mongo, [[name: :database, database: database(), pool_size: 2]])
     ]
 
