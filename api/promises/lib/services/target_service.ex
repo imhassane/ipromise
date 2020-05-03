@@ -2,6 +2,25 @@ defmodule Service.TargetService do
 
   alias Repo.{TargetRepo}
 
+  # Getting the target for a frequency.
+  def get_frequency_targets(frequency_id) do
+    try do
+      id = BSON.ObjectId.decode!(frequency_id)
+      targets = TargetRepo.get_frequency_targets(id)
+      targets =
+        targets
+        |> Enum.map(fn (t) -> convert_target_to_json(t) end)
+
+      if targets do
+        {:ok, targets}
+        else
+        {:ok, []}
+      end
+    rescue
+      _ in FunctionClauseError -> {:not_found, "The frequency with the given ID does not exist"}
+    end
+  end
+
   # Adding a new target.
   def add_target(frequency, target) do
     unless is_valid?(target) do

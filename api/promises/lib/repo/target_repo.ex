@@ -4,7 +4,7 @@ defmodule Repo.TargetRepo do
 
    # Getting targets for a frequency.
   def get_frequency_targets(freq_id) do
-    :database |> Mongo.find_one(@collection, %{"frequency" => freq_id})
+    :database |> Mongo.find(@collection, %{"frequency" => freq_id})
   end
 
   def get_target(id) do

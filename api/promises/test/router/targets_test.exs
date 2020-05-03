@@ -7,7 +7,6 @@ defmodule Router.TargetsTest do
 
   @options Router.init([])
 
-  # TODO: ajout des tests pour les requetes crud.
   test "Adding a target" do
     {:ok, promises} = PromiseService.get_promises()
     %{"_id" => id} = promises |> Kernel.hd |> Jason.decode!
