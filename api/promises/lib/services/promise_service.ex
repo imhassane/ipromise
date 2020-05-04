@@ -49,7 +49,7 @@ defmodule Service.PromiseService do
 
   def add_promise(_), do: {:malformed_data, "Unable to add the promise, the title is not correct"}
 
-  # TODO: Updating a promise.
+  # Updating a promise.
   def update_promise(id, %{"title" => _title} = promise) do
     try do
       id = BSON.ObjectId.decode!(id)
@@ -85,7 +85,6 @@ defmodule Service.PromiseService do
 
     rescue
       _ in FunctionClauseError -> {:not_found, "The promise with the given ID does not exist"}
-      # TODO: capture other exceptions
     end
   end
   def update_promise(_, _), do: {:not_found, "Here we are"}

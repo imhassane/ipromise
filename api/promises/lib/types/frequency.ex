@@ -3,7 +3,6 @@ defmodule Types.Frequency do
   @derive Jason.Encoder
   defstruct _id: nil, type: :daily, repeat: 0, targets: nil, created_at: nil, updated_at: nil
 
-  # TODO: Changer le naivedatetime pour le faire correspondre au timezone de l'utilisateur.
   def new(), do: %Types.Frequency{ created_at: NaiveDateTime.utc_now, updated_at: NaiveDateTime.utc_now }
 
   def add_target(%Types.Frequency{ targets: targets } = frequency, %Types.Target{} = target) do
