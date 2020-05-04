@@ -41,7 +41,7 @@ defmodule Service.PromiseService do
       promise = Promise.new(title) |> PromiseRepo.add_promise()
 
       case promise do
-        {:ok, _} -> {:ok, "The promise has been added successfully"}
+        {:ok, promise} -> {:ok, convert_promise_to_json(promise)}
                _ -> {:internal_server, "Unable to add the promise, try later"}
       end
     end
@@ -67,21 +67,10 @@ defmodule Service.PromiseService do
 
       result =
         case result do
-          {:ok, nil} -> :not_found
-          {:ok, _promise} -> :ok
-          {_, _} -> :error
+          {:ok, nil} -> {:not_found, "The promise does not exist"}
+          {:ok, promise} -> {:ok, convert_promise_to_json(promise)}
+          {_, _} -> {:error, "Unable to update the promise"}
         end
-
-      unless result == :ok do
-          {:not_found, "The promise with the given ID does not exist"}
-      else
-        id = BSON.ObjectId.encode!(id)
-        promise =
-          promise
-            |> Map.put("_id", id)
-            |> convert_promise_to_json
-        {:ok, promise}
-      end
 
     rescue
       _ in FunctionClauseError -> {:not_found, "The promise with the given ID does not exist"}
@@ -93,13 +82,11 @@ defmodule Service.PromiseService do
   def delete_promise(id) when is_binary(id) do
     try do
       id = BSON.ObjectId.decode!(id)
-      promise = PromiseRepo.get_promise(id)
-      if promise do
-        PromiseRepo.delete_promise(id)
-        promise = convert_promise_to_json(promise)
-        {:ok, promise}
-      else
-        {:not_found, "The promise does not exist"}
+      result = PromiseRepo.delete_promise(id)
+      case result do
+        {:ok, nil} -> {:not_found, "The promise with the given ID does not exist"}
+        {:ok, promise} -> {:ok, convert_promise_to_json(promise)}
+        {:error, _} -> {:error, "Unable to delete the promise"}
       end
     rescue
       _ in FunctionClauseError -> {:not_found, "The promise with the given ID does not exist"}

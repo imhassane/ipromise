@@ -53,3 +53,4 @@ Before each request, we'll have to verify if the user is authenticated by sendin
 ###### Future optimizations
 - [ ] Adding the populate to fetch once a frequency and its targets
 - [ ] GraphQL or gRPC for faster requests
+- [ ] Moving to Postgres for easier triggers when deleting or updating.
