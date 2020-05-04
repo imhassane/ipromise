@@ -24,44 +24,42 @@ defmodule Repo.FrequencyRepo do
 
   # Updating the frequency.
   def update_frequency(%{ "_id" => id } = frequency) do
-    :database |> Mongo.update_one(@collection, %{ "_id" => id }, %{ "$set": frequency })
+    with {:ok, _}      <- Mongo.update_one(:database, @collection, %{"_id" => id}, %{"$set": frequency})
+    do
+      result = Mongo.find_one(:database, @collection, %{"_id" => id})
+      {:ok, result}
+    end
   end
 
   def update_promise_frequency(%{"promise" => id} = frequency) do
-    :database |> Mongo.update_one(@collection, %{ "promise" => id }, %{"$set": frequency})
+     with {:ok, _} <- Mongo.update_one(:database, @collection, %{"promise" => id}, %{"$set": frequency})
+     do
+        result = Mongo.find_one(:database, @collection, %{"promise" => id})
+        {:ok, result}
+     end
   end
 
   # Updating a frequency if it exists given the promise id.
-  def find_and_update_promise_frequency(%{"promise" => id} = frequency) do
-    :database |> Mongo.find_one_and_update(@collection, %{ "promise" => id }, %{ "$set": frequency })
-  end
+  def find_and_update_promise_frequency(%{"promise" => id} = frequency), do: update_promise_frequency(frequency)
 
   # deleting the frequency.
   def delete_frequency(id) do
-    with {:ok, freq}    <- Mongo.find_one(:database, @collection, %{"_id" => id}),
+    with freq           <- Mongo.find_one(:database, @collection, %{"_id" => id}),
          {:ok, deleted} <- Mongo.delete_one(:database, @collection, %{ "_id" => id }),
          {:ok, _}       <- Mongo.update_one(:database, "promises", %{"frequency" => id}, %{"$set": %{"frequency" => nil}}),
          {:ok, _}       <- Mongo.delete_many(:database, "targets", %{"frequency" => id})
     do
-      if deleted.deleted_count == 1 do
-        {:ok, freq}
-      else
-        {:error, %{ "acknowledged" => deleted.acknowledged, "total" => deleted.deleted_count}}
-      end
+      {:ok, freq}
     end
   end
 
   def delete_promise_frequency(id) do
-    with {:ok, freq}    <- Mongo.find_one(:database, @collection, %{"_id" => id}),
-         {:ok, deleted} <- Mongo.delete_one(:database, @collection, %{"promise" => id }),
+    with freq           <- Mongo.find_one(:database, @collection, %{"promise" => id}),
+         {:ok, deleted} <- Mongo.delete_one(:database, @collection, %{ "promise" => id }),
          {:ok, _}       <- Mongo.update_one(:database, "promises", %{"frequency" => id}, %{"$set": %{"frequency" => nil}}),
          {:ok, _}       <- Mongo.delete_many(:database, "targets", %{"frequency" => id})
-      do
-      if deleted.deleted_count == 1 do
-        {:ok, freq}
-      else
-        {:error, %{ "acknowledged" => deleted.acknowledged, "total" => deleted.deleted_count}}
-      end
+    do
+      {:ok, freq}
     end
   end
 end

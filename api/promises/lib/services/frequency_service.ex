@@ -23,25 +23,15 @@ defmodule Service.FrequencyService do
 
     unless is_valid?(frequency) do
       {:malformed_data, "Unable to update: please enter the correct data"}
-
     else
       try do
         promise_id = BSON.ObjectId.decode!(promise_id)
         frequency = Map.put frequency, "promise", promise_id
 
-        # If a frequency with the ID exists.
-        result =
-          case FrequencyRepo.find_and_update_promise_frequency(frequency) do
-            {:ok, nil} -> :should_create
-            {:ok, _ } -> :updated
-            {_, _}    -> :should_create
-          end
-
-        # We create a new frequency.
-        if result == :should_create, do: FrequencyRepo.add_frequency(frequency)
-
-        frequency = FrequencyRepo.get_promise_frequency(promise_id)
-        {:ok, encode_frequency(frequency)}
+        case FrequencyRepo.add_frequency(frequency) do
+          {:ok, frequency}  -> {:ok, encode_frequency(frequency)}
+          {:error, _}       -> {:error, "Unable to add the frequency"}
+        end
       rescue
         _ in FunctionClauseError -> {:not_found, "The promise with the given ID doesn't exist"}
         _ -> {:server_error, nil }
@@ -62,21 +52,14 @@ defmodule Service.FrequencyService do
         id = BSON.ObjectId.decode!(promise_id)
         frequency = Map.put frequency, "promise", id
 
-        result =
-          case FrequencyRepo.update_promise_frequency(frequency) do
-            {:ok, _ } -> :updated
-                    _ -> :error
-          end
-
-        unless result == :updated do
-          {:error, "Unable to update the frequency"}
+        result = FrequencyRepo.update_promise_frequency(frequency)
+        case result do
+          {:ok, nil}      -> {:not_found, "The frequency does not exist"}
+          {:ok, frequency}  -> {:ok, encode_frequency(frequency)}
+          {:error, _}     -> {:error, "Unable to updated the frequency"}
         end
-
-        frequency = FrequencyRepo.get_promise_frequency(id)
-        {:ok, encode_frequency(frequency)}
       rescue
         _ in FunctionClauseError -> {:not_found, "The promise with the given ID doesn't exist"}
-        _ -> {:server_error, nil }
       end
     end
   end
@@ -87,17 +70,16 @@ defmodule Service.FrequencyService do
   def delete_frequency(promise_id) do
     try do
       id = BSON.ObjectId.decode!(promise_id)
-      frequency = FrequencyRepo.get_promise_frequency(id)
 
-      if frequency do
-        FrequencyRepo.delete_promise_frequency(id)
-        {:ok, encode_frequency(frequency)}
-      else
-        {:not_found, "The frequency with the given promise ID does not exist"}
+      result = FrequencyRepo.delete_promise_frequency(id)
+      IO.inspect result
+      case result do
+        {:ok, nil}        -> {:not_found, "Unable to delete: The frequency does not exist"}
+        {:ok, frequency}  -> {:ok, encode_frequency(frequency)}
+        {:error, _}       -> {:error, "Unable to delete the frequency"}
       end
     rescue
       _ in FunctionClauseError -> {:not_found, "The promise with the given ID doesn't exist"}
-      _ -> {:server_error, nil }
     end
   end
 
