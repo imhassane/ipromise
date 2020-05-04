@@ -20,7 +20,9 @@ defmodule BaseRouter do
 
         # TODO: Adding logging for errors.
         message = Jason.encode! %{ data: message }
-        send_resp(conn, code, message)
+        conn
+            |> Plug.Conn.put_resp_content_type("application/json")
+            |> send_resp(code, message)
       end
     end
   end
