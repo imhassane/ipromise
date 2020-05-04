@@ -13,16 +13,25 @@ defmodule Repo.TargetRepo do
 
    # Adding a new target.
   def add_target(target) do
-    :database |> Mongo.insert_one(@collection, target)
+    with {:ok, result } <- Mongo.insert_one(:database, @collection, target) do
+      result = Mongo.find_one(:database, @collection, %{"_id" => result.inserted_id})
+      {:ok, result}
+    end
   end
 
    # Updating the target.
    def update_target(%{"_id" => id} = target) do
-     :database |> Mongo.update_one(@collection, %{ "_id" => id}, %{"$set": target})
+      with {:ok, _} <- Mongo.update_one(:database, @collection, %{ "_id" => id}, %{"$set": target}) do
+        result = Mongo.find_one(:database, @collection, %{"_id" => id})
+        {:ok, result}
+      end
   end
 
    # Deleting the target.
    def delete_target(id) do
-     :database |> Mongo.delete_one(@collection, %{"_id" => id})
+     with target <- Mongo.find_one(:database, @collection, %{"_id" => id}),
+          {:ok, _} <- Mongo.delete_one(@collection, %{"_id" => id}) do
+       {:ok, target}
+     end
   end
 end

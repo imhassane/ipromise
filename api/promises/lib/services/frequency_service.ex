@@ -72,7 +72,6 @@ defmodule Service.FrequencyService do
       id = BSON.ObjectId.decode!(promise_id)
 
       result = FrequencyRepo.delete_promise_frequency(id)
-      IO.inspect result
       case result do
         {:ok, nil}        -> {:not_found, "Unable to delete: The frequency does not exist"}
         {:ok, frequency}  -> {:ok, encode_frequency(frequency)}

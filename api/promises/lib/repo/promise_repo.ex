@@ -35,10 +35,10 @@ defmodule Repo.PromiseRepo do
   # Deleting a promise
   def delete_promise(id) do
     with  promise             <- Mongo.find_one(:database,    @collection,    %{"_id" => id}),
-          %{"_id" => freq_id} <- Mongo.find_one(:database,    "frequencies",  %{"promise"=>id}),
+          freq                <- Mongo.find_one(:database,    "frequencies",  %{"promise"=>id}),
           {:ok, _}            <- Mongo.delete_one(:database,   @collection,    %{"_id" => id}),
           {:ok, _}            <- Mongo.delete_one(:database,  "frequencies",  %{"promise"=>id}),
-          {:ok, _}            <- Mongo.delete_many(:database, "targets",      %{"frequency" => freq_id})
+          {:ok, _}            <- Mongo.delete_many(:database, "targets",      %{"frequency" => freq["_id"]})
     do
       {:ok, promise}
     end

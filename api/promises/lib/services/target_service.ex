@@ -50,10 +50,10 @@ defmodule Service.TargetService do
           |> Map.put("done", false)
 
 
-        TargetRepo.add_target(target)
-
-        target = convert_target_to_json(target)
-        {:ok, target}
+        case TargetRepo.add_target(target) do
+          {:ok, target} -> {:ok, convert_target_to_json(target)}
+          {_, _} -> {:error, "Unable to add the target"}
+        end
       rescue
           _ in FunctionClauseError -> {:not_found, "The frequency with the given ID does not exist"}
       end
@@ -68,13 +68,12 @@ defmodule Service.TargetService do
       try do
         id = BSON.ObjectId.decode!(id)
         target = Map.put target, "_id", id
-        {:ok, result} = TargetRepo.update_target(target)
 
-        if result.modified_count == 0 do
-          {:not_found, "The target with the given ID does not exist"}
-        else
-          target = convert_target_to_json(target)
-          {:ok, target}
+        result = TargetRepo.update_target(target)
+        case result do
+          {:ok, nil} -> {:not_found, "The target does not exist"}
+          {:ok, target} -> {:ok, convert_target_to_json(target)}
+          {_, _} -> {:error, "Unable to update the target"}
         end
       rescue
         _ in FunctionClauseError -> {:not_found, "The target with the given ID does not exist"}
@@ -86,14 +85,12 @@ defmodule Service.TargetService do
   def delete_target(id) do
     try do
       id = BSON.ObjectId.decode!(id)
-      target = TargetRepo.get_target(id)
+      result = TargetRepo.delete_target(id)
 
-      unless target do
-        {:not_found, "The target with the given ID does not exist"}
-      else
-        TargetRepo.delete_target(id)
-        target = convert_target_to_json(target)
-        {:ok, target}
+      case result do
+        {:ok, nil} -> {:not_found, "The target does not exist"}
+        {:ok, target} -> {:ok, convert_target_to_json(target)}
+        {_, _} -> {:error, "Unable to delete the target"}
       end
     rescue
       _ in FunctionClauseError -> {:not_found, "The target with the given ID does not exist"}
