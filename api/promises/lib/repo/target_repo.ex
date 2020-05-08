@@ -30,7 +30,7 @@ defmodule Repo.TargetRepo do
    # Deleting the target.
    def delete_target(id) do
      with target <- Mongo.find_one(:database, @collection, %{"_id" => id}),
-          {:ok, _} <- Mongo.delete_one(@collection, %{"_id" => id}) do
+          {:ok, _} <- Mongo.delete_one(:database, @collection, %{"_id" => id}) do
        {:ok, target}
      end
   end
