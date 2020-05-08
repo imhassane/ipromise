@@ -1,9 +1,12 @@
 import Express from "express";
 import BodyParser from "body-parser";
 import ExpressSession from "express-session";
+import ExpressContext from "express-http-context";
+
 import routes from "./startup/routes";
 import MongoRepository from "./repos/MongoRepository";
 import MongoService from "./services/MongoService";
+import authMiddleware from "./middlewares/authentication";
 
 const sessionCookieConfig = {
     secret: process.env.SESSION_SECRET || 'secret',
@@ -24,6 +27,8 @@ if(application.get('env') === 'production') {
 
 application.use(ExpressSession(sessionCookieConfig));
 application.use(BodyParser.json());
+application.use(ExpressContext.middleware);
+application.use(authMiddleware);
 
 const repository = new MongoRepository();
 repository.connect().then(() => {
