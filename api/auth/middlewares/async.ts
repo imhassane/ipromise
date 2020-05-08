@@ -25,7 +25,6 @@ function asyncMiddleware(fn){
                 else
                     code = 500;
                 return res.status(code).send(ex.message);
-                next();
             });
 }
 
