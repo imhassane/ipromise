@@ -16,7 +16,8 @@ export default class MongoRepository implements Repository {
     };
 
     async connect(): Promise<any> {
-        const { DATABASE_URL = MongoRepository.LOCALHOST_DB } = process.env;
+        let { DATABASE_URL = MongoRepository.LOCALHOST_DB } = process.env;
+        if(process.env.NODE_ENV === "test") DATABASE_URL = `test-${DATABASE_URL}`;
         return conn(DATABASE_URL, MongoRepository.MONGO_OPTIONS);
     }
 

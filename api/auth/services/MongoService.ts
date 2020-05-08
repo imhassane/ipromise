@@ -5,7 +5,6 @@ import MalformedDataError from "../errors/MalformedDataError";
 import ResourceNotFoundError from "../errors/ResourceNotFoundError";
 import {Document} from "mongoose";
 import ResourceAlreadyExistsError from "../errors/ResourceAlreadyExistsError";
-import NonAuthorizedError from "../errors/NonAuthorizedError";
 
 export default class MongoService implements Service {
     repository: Repository;
