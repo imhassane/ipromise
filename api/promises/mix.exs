@@ -25,7 +25,8 @@ defmodule Promises.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:jason, "~> 1.2"},
       {:mongodb, "~> 0.5.1"},
-      {:poolboy, "~> 1.5.2"}
+      {:poolboy, "~> 1.5.2"},
+      {:httpoison, "~> 1.6"}
     ]
   end
 end

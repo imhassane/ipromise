@@ -8,7 +8,7 @@ defmodule Service.PromiseService do
     promises = PromiseRepo.get_promises()
 
     promises = promises
-              |> Enum.map(fn (p) -> p |> convert_promise_to_json |> Jason.encode! end)
+              |> Enum.map(fn (p) -> p |> convert_promise_to_json end)
     {:ok, promises}
   end
 

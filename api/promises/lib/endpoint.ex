@@ -1,7 +1,10 @@
 defmodule Endpoint do
   use Plug.Router
 
+  alias Promises.Auth.AuthPlug
+
   plug(Plug.Logger)
+  plug AuthPlug
   plug :match
   plug(Plug.Parsers, parsers: [:json], json_decoder: Jason)
   plug :dispatch
