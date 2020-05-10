@@ -29,6 +29,9 @@ jest.setTimeout(3000);
 
 test("Creating a new user", async () => {
     const res = await fetch(`${API}/email/add`, new_user_post);
+    const {data} = await res.json();
+
+    expect(data.isActive).toBeTruthy();
     
     // if the user already exists, it will return 400.
     const result = [400, 200].includes(res.status) ? res.status : 500;
