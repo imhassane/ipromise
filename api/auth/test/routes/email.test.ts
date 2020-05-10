@@ -1,5 +1,4 @@
 import fetch from "node-fetch";
-import { authForbidden } from "../../middlewares/authentication";
 
 const API = "http://localhost:5000/api/v1";
 const user = {
