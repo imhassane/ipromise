@@ -20,8 +20,14 @@ export default interface Service {
     // Update a user
     updateUser(_id: string, user: UserParams): Promise<Document | null>
 
+    // Reactivation of email
+    activateEmail(email: string | null): Promise<Document | null>
+
     // Delete an user.
     deleteUser(_id: string): Promise<Document>
+
+    // Delete an user.
+    forceDeleteUser(_id: string): Promise<Document>
 
     // Adding a password.
     addPassword(emailID: string, password: string): Promise<Document>

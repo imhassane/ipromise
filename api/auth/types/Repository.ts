@@ -24,6 +24,12 @@ export default interface Repository {
     // Delete an user.
     deleteUser(_id: string): DocumentQuery<Document | null, Document, {}> & {}
 
+    // Delete an user.
+    forceDeleteUser(_id: string): DocumentQuery<Document | null, Document, {}> & {}
+
+    // Reactivation of an user's account
+    activateEmail(email: string): DocumentQuery<Document | null, Document, {}> & {}
+
     // Adding a password.
     addPassword(email: Document, password: string): Promise<Document>
 

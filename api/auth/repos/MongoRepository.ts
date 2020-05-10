@@ -42,6 +42,10 @@ export default class MongoRepository implements Repository {
         return Email.findOneAndUpdate({ _id }, { $set: { isActive: false } }, { new: true });
     }
 
+    forceDeleteUser(_id: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return Email.findOneAndRemove({ _id });
+    }
+
     getOneUser(_id?: string, email?: string): DocumentQuery<Document | null, Document, {}> & {} {
         return Email.findOne({ user: _id, email });
     }
@@ -62,6 +66,10 @@ export default class MongoRepository implements Repository {
 
     updateUser(_id: string, user: UserParams): DocumentQuery<Document | null, Document, {}> & {} {
         return User.findOneAndUpdate({ _id }, { $set: user }, { new: true });
+    }
+
+    activateEmail(email: string): DocumentQuery<Document | null, Document, {}> & {} {
+        return Email.findOneAndUpdate({ email }, { $set: {isActive: true} }, { new: true });
     }
 
     getEmail(_id: string): DocumentQuery<Document | null, Document, {}> & {} {

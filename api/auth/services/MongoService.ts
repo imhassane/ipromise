@@ -56,6 +56,17 @@ export default class MongoService implements Service {
         return _user;
     }
 
+    async forceDeleteUser(_id: string): Promise<Document> {
+        if(!_id)
+            throw new MalformedDataError("The user's ID must be specified");
+
+        const _user = await this.repository.forceDeleteUser(_id);
+        if(!_user)
+            throw new ResourceNotFoundError("The user with the given ID does not exist");
+
+        return _user;
+    }
+
     async getOneUser(_id?: string, email?: string): Promise<Document | null> {
         if(!_id && !email || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(<string>email))
             throw new MalformedDataError("The ID or the address email is required");
@@ -112,6 +123,14 @@ export default class MongoService implements Service {
 
         _user = await this.repository.updateUser(_id, user);
         return _user;
+    }
+
+    async activateEmail(email: string | null): Promise<Document | null> {
+        if(!email || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(<string>email))
+            throw new MalformedDataError("The email address is not valid");
+
+        const _email = await this.repository.activateEmail(email);
+        return _email;
     }
 
     async getEmail(_id: string): Promise<Document | null> {
