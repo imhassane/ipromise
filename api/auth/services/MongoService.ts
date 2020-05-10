@@ -36,6 +36,9 @@ export default class MongoService implements Service {
         if(!user.email || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(user.email))
             throw new MalformedDataError("The email address in not correct");
 
+        if(!user.password || user.password.length < 8)
+            throw new MalformedDataError("The password should be at least 8 characters");
+
         let _email = await this.repository.getEmailWithAddress(user.email);
         if(_email)
             throw new ResourceAlreadyExistsError("The given email address already exists");
