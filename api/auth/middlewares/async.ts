@@ -24,7 +24,7 @@ function asyncMiddleware(fn){
                     code = 401;
                 else
                     code = 500;
-                return res.status(code).send(ex.message);
+                return res.status(code).send({data: ex.message});
             });
 }
 

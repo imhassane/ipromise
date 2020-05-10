@@ -25,12 +25,10 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
         if(!token || !token.length) {
             ExpressContext.set("user", null);
         } else {
-            const decoded: { _id?: string } = <object> await TokenService.decodeToken(token);
+            const decoded: { id?: string } = <object> await TokenService.decodeToken(token);
 
             if(decoded) {
-                // TODO: voir pourquoi ça renvoie null.
-                const user = await Email.findOne({ _id: decoded._id }).populate("users");
-                console.log(user);
+                const user = await Email.findOne({ _id: decoded.id }).populate("users");
                 ExpressContext.set("user", user);
             }
         }
