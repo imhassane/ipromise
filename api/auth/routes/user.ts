@@ -4,7 +4,6 @@ import Context from "express-http-context";
 import Service from "../types/Service";
 import asyncMiddleware from "../middlewares/async";
 import ResourceNotFoundError from "../errors/ResourceNotFoundError";
-import NonAuthenticatedError from "../errors/NonAuthenticatedError";
 import NonAuthorizedError from "../errors/NonAuthorizedError";
 import TokenService from "../services/TokenService";
 
@@ -19,7 +18,7 @@ export default (router: Router, service: Service) => {
     router.put("/user/update", authRequired, asyncMiddleware(async (req: Request, res: Response) => {
         let user = Context.get("user");
         user = await service.updateUser(user.user._id, req.body);
-        return res.status(200).send(user);
+        return res.status(200).send({data: user});
     }));
 
     router.post("/user/authenticate", authForbidden, asyncMiddleware(async (req: Request, res: Response) => {
@@ -43,7 +42,7 @@ export default (router: Router, service: Service) => {
             req.session.destroy(err => {
                 if(err)
                     return res.status(500).send("An error occurred when logging you out.");
-                return res.status(200).send("You've been successfully logged out");
+                return res.status(200).send({data: "You've been successfully logged out"});
             });
         }
 
@@ -51,8 +50,14 @@ export default (router: Router, service: Service) => {
 
     router.delete("/user/delete", authRequired, asyncMiddleware(async (req: Request, res: Response) => {
         let user = Context.get("user");
-        await service.deleteUser(user._id);
-        return res.status(200).send("Your account has been successfully deactivated");
+        user = await service.deleteUser(user._id);
+        return res.status(200).send({data: user});
+    }));
+
+    router.delete("/user/force-delete", authRequired, asyncMiddleware(async (req: Request, res: Response) => {
+        const user = Context.get("user");
+        await service.forceDeleteUser(user._id);
+        return res.status(200).send({data: "Your account has been removed from our database"})
     }));
 
 }
