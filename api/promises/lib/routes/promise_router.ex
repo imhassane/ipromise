@@ -12,7 +12,10 @@ defmodule Routes.PromiseRouter do
   end
 
   post "/" do
-    PromiseService.add_promise(conn.body_params)
+    user = conn.assigns[:user]
+    params = Map.put(conn.body_params, "user", user["_id"])
+
+    PromiseService.add_promise(params)
     |> handle_response(conn)
   end
 

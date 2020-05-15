@@ -32,13 +32,15 @@ defmodule Service.PromiseService do
   def get_promise(_), do: {:not_found, "The promise with the given ID does not exist"}
 
   # Adding a new promise.
-  def add_promise(%{ "title" => title }) do
+  def add_promise(%{ "title" => title, "user" => user }) do
 
     if title == nil or String.length(title) < 5 do
       {:malformed_data, "The title should be at least 5 characters"}
     else
       # I'm using the Promise.new because of its date initialisation.
-      promise = Promise.new(title) |> PromiseRepo.add_promise()
+      promise = Promise.new(title)
+      promise = %Promise{ promise | user: user }
+      promise = PromiseRepo.add_promise(promise)
 
       case promise do
         {:ok, promise} -> {:ok, convert_promise_to_json(promise)}
@@ -65,12 +67,11 @@ defmodule Service.PromiseService do
         |> Map.put("_id", id)
         |> PromiseRepo.update_promise()
 
-      result =
-        case result do
-          {:ok, nil} -> {:not_found, "The promise does not exist"}
-          {:ok, promise} -> {:ok, convert_promise_to_json(promise)}
-          {_, _} -> {:error, "Unable to update the promise"}
-        end
+      case result do
+        {:ok, nil} -> {:not_found, "The promise does not exist"}
+        {:ok, promise} -> {:ok, convert_promise_to_json(promise)}
+        {_, _} -> {:error, "Unable to update the promise"}
+      end
 
     rescue
       _ in FunctionClauseError -> {:not_found, "The promise with the given ID does not exist"}
