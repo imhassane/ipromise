@@ -10,6 +10,6 @@ export default (router: Router, service: Service) => {
         const user = Context.get("user");
         const { password } = req.body;
         await service.addPassword(user._id, password);
-        return res.status(200).send("The password has been updated successfully");
+        return res.status(200).send({data: "The password has been updated successfully"});
     }));
 }

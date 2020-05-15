@@ -36,18 +36,6 @@ export default (router: Router, service: Service) => {
         return res.status(200).send({data: token});
     }));
 
-    // TODO: remove this endpoint.
-    router.get("/user/logout", asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-        if(req.session) {
-            req.session.destroy(err => {
-                if(err)
-                    return res.status(500).send("An error occurred when logging you out.");
-                return res.status(200).send({data: "You've been successfully logged out"});
-            });
-        }
-
-    }));
-
     router.delete("/user/delete", authRequired, asyncMiddleware(async (req: Request, res: Response) => {
         let user = Context.get("user");
         user = await service.deleteUser(user._id);
