@@ -5,20 +5,16 @@ defmodule Promises.Auth.AuthPlug do
   end
 
   @url "http://localhost:5000/api/v1/user"
-  @headers []
 
   def init(options), do: options
 
   def call(conn, _) do
-    verify_authentication(conn)
+    conn = verify_authentication(conn)
     conn
   end
 
   defp verify_authentication(%Plug.Conn{req_headers: headers} = conn) do
-    is_authenticated = false
-
     {_, token} = get_authentication_token headers
-
     if !token do
       raise(NonAuthenticatedError)
     else
@@ -30,6 +26,7 @@ defmodule Promises.Auth.AuthPlug do
         {:error, _} ->
           raise(NonAuthenticatedError)
         {:ok, %HTTPoison.Response{body: body}} ->
+          conn = Plug.Conn.assign(conn, :user, Jason.decode!(body))
           conn
         _ ->
           raise(NonAuthenticatedError)
