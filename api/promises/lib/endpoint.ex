@@ -1,5 +1,6 @@
 defmodule Endpoint do
   use Plug.Router
+  use Plug.ErrorHandler
 
   alias Promises.Auth.AuthPlug
 
@@ -15,5 +16,17 @@ defmodule Endpoint do
 
   match _ do
     send_resp(conn, 404, "oops!")
+  end
+
+  defp handle_errors(conn, %{kind: _kind, reason: %{message: message}, stack: _stack}) do
+    conn
+      |> Plug.Conn.put_resp_content_type("application/json")
+      |> send_resp(conn.status, Jason.encode!(%{data: message}))
+  end
+
+  defp handle_errors(conn, %{kind: _kind, reason: _reason, stack: _stack}) do
+    conn
+    |> Plug.Conn.put_resp_content_type("application/json")
+    |> send_resp(conn.status, Jason.encode!(%{data: "An error occurred internally"}))
   end
 end
