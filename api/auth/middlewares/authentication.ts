@@ -5,14 +5,14 @@ import TokenService from "../services/TokenService";
 
 export function authForbidden(req: Request, res: Response, next: NextFunction) {
     if(ExpressContext.get("user"))
-    return res.status(401).send({message: "You are already authenticated"});
+    return res.status(401).send({data: "You are already authenticated"});
 
     return next();
 }
 
 export function authRequired(req: Request, res: Response, next: NextFunction) {
     const user = ExpressContext.get("user");
-    if(!user) return res.status(401).send({message: "You are not authenticated"});
+    if(!user) return res.status(401).send({data: "You are not authenticated"});
 
     return next();
 }
@@ -38,7 +38,7 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     } catch(ex) {
         // TODO: log the errors
         console.log(ex.message)
-        return res.status(400).send("You need to log in again");
+        return res.status(400).send({data: "You need to log in again"});
     }
 }
 
