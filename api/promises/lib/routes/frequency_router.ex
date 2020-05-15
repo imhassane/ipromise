@@ -16,4 +16,8 @@ defmodule Routes.FrequencyRouter do
     FrequencyService.delete_frequency(promise_id)
     |> handle_response(conn)
   end
+
+  match _ do
+    send_resp(conn, 404, "oops!")
+  end
 end

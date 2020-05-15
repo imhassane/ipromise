@@ -26,6 +26,5 @@ defmodule BaseRouter do
       end
     end
   end
-
   
 end
