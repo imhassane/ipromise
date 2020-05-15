@@ -42,12 +42,46 @@ test("Authentication", async () => {
     return expect(res.status).toBe(200);
 });
 
+
+
 test("Updating the user", async () => {
     const {token} = await authenticate();
     expect(token).not.toBeNull();
 
     const res = await fetch(`${API}/user/update`, update_user_put(token, { firstName: "test1" }));
     return expect(res.status).toBe(200);
+});
+
+test("updating the password", async () => {
+    const {token} = await authenticate();
+    expect(token).not.toBeNull();
+
+    const params = {
+        method: "PUT",
+        body: JSON.stringify({ password: "testtest" }),
+        headers: {
+            "Content-Type": "application/json",
+            "authentication-token": token
+        }
+    };
+    const res = await fetch(`${API}/user/password/update`, params);
+    return expect(res.status).toBe(200);
+});
+
+test("updating with a non valid password", async () => {
+    const {token} = await authenticate();
+    expect(token).not.toBeNull();
+
+    const params = {
+        method: "PUT",
+        body: JSON.stringify({ password: "just" }),
+        headers: {
+            "Content-Type": "application/json",
+            "authentication-token": token
+        }
+    };
+    const res = await fetch(`${API}/user/password/update`, params);
+    return expect(res.status).toBe(400);
 });
 
 test("Deleting the user", async () => {
@@ -58,7 +92,8 @@ test("Deleting the user", async () => {
                     {
                         method: "delete",
                         headers: {
-                            "authentication-token": token
+                            "authentication-token": token,
+                            "Content-Type": "application/json"
                         }
                     });
     const {data} = await res.json();
@@ -78,13 +113,26 @@ test("Reactivation of email", async () => {
     return expect(res.status).toBe(200);
 });
 
+test("Reactivation of non valid email", async () => {
+    let {res} = await authenticate();
+    expect(res.status).toBe(403);
+
+    const params = {
+        method: "PUT",
+        body: JSON.stringify({email: "test"}),
+        headers: { "Content-Type": "application/json"}
+    };
+    res = await fetch(`${API}/email/active`, params);
+    return expect(res.status).toBe(400);
+});
+
 test("Forcing the deleting", async () => {
     const {token} = await authenticate();
     expect(token).not.toBeNull();
 
     const res = await fetch(`${API}/user/force-delete`, {
         method: "delete",
-            headers: {"authentication-token": token}
+            headers: {"authentication-token": token, "Content-Type": "application/json"}
         });
     return expect(res.status).toBe(200);
 });
